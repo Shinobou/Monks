@@ -1,11 +1,16 @@
+import typing
+
 import snowfin
 
 
-class UtilitiesModule(snowfin.Module):
-    """This is an example module"""
+__all__: typing.Sequence[str] = ("UtilitiesModule",)
 
-    @snowfin.slash_command("info")
-    async def info_command(self, _: snowfin.Interaction):
+
+class UtilitiesModule(snowfin.Module):
+    @snowfin.slash_command("info", dm_permission=False)
+    async def info_command(
+        self, _: snowfin.Interaction
+    ) -> tuple[snowfin.Embed, snowfin.Button]:
         """Shows the user information about Monks."""
         return (
             snowfin.Embed(
