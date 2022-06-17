@@ -53,14 +53,20 @@ class EconomyModule(snowfin.Module):
             f"This guild has not configured a starting balance yet. Please use `/config`.",
         )
 
-    @snowfin.slash_command("add_coins", default_member_permissions=snowfin.Permissions.ADMINISTRATOR, dm_permission=False)
+    @snowfin.slash_command(
+        "add_coins",
+        default_member_permissions=snowfin.Permissions.ADMINISTRATOR,
+        dm_permission=False,
+    )
     @snowfin.slash_option("user", "the user", snowfin.OptionType.USER, required=True)
-    @snowfin.slash_option("amount", "the amount of coins", snowfin.OptionType.INTEGER, required=True)
+    @snowfin.slash_option(
+        "amount", "the amount of coins", snowfin.OptionType.INTEGER, required=True
+    )
     async def add_coins_command(
         self,
         context: snowfin.Interaction,
         user: snowfin.User | snowfin.Member,
-        amount: int
+        amount: int,
     ) -> snowfin.Embed:
         """Allows admins to add coins."""
         if isinstance(user, snowfin.Member):
@@ -70,7 +76,7 @@ class EconomyModule(snowfin.Module):
                 return snowfin.Embed("Error", f"Could not determine user.")
 
         if user_stats := await models.User.get_or_none(
-                id=user.id, guild_id=context.guild_id
+            id=user.id, guild_id=context.guild_id
         ):
             await user_stats.update_from_dict({"coins": user_stats.coins + amount})
             await user_stats.save(update_fields=["coins"])
@@ -78,14 +84,20 @@ class EconomyModule(snowfin.Module):
             await _create_user(context, user, amount)
         return snowfin.Embed("Added", f"Added **{amount}** coins to <@{user.id}>.")
 
-    @snowfin.slash_command("remove_coins", default_member_permissions=snowfin.Permissions.ADMINISTRATOR, dm_permission=False)
+    @snowfin.slash_command(
+        "remove_coins",
+        default_member_permissions=snowfin.Permissions.ADMINISTRATOR,
+        dm_permission=False,
+    )
     @snowfin.slash_option("user", "the user", snowfin.OptionType.USER, required=True)
-    @snowfin.slash_option("amount", "the amount of coins", snowfin.OptionType.INTEGER, required=True)
+    @snowfin.slash_option(
+        "amount", "the amount of coins", snowfin.OptionType.INTEGER, required=True
+    )
     async def remove_coins_command(
         self,
         context: snowfin.Interaction,
         user: snowfin.User | snowfin.Member,
-        amount: int
+        amount: int,
     ) -> snowfin.Embed:
         """Allows admins to remove coins."""
         if isinstance(user, snowfin.Member):
@@ -95,7 +107,7 @@ class EconomyModule(snowfin.Module):
                 return snowfin.Embed("Error", f"Could not determine user.")
 
         if user_stats := await models.User.get_or_none(
-                id=user.id, guild_id=context.guild_id
+            id=user.id, guild_id=context.guild_id
         ):
             await user_stats.update_from_dict({"coins": user_stats.coins - amount})
             await user_stats.save(update_fields=["coins"])

@@ -9,13 +9,21 @@ from monks.database import models
 
 
 class ConfigModule(snowfin.Module):
-    @snowfin.slash_command(
-        "config",
+    set_command: snowfin.SlashCommand = snowfin.SlashCommand(
+        name="set",
         default_member_permissions=snowfin.Permissions.ADMINISTRATOR,
         dm_permission=False,
     )
-    async def config_command(self, _: snowfin.Interaction) -> snowfin.ModalResponse:
-        """Opens up a menu to edit the config."""
+
+    view_command: snowfin.SlashCommand = snowfin.SlashCommand(
+        name="view",
+        default_member_permissions=snowfin.Permissions.ADMINISTRATOR,
+        dm_permission=False,
+    )
+
+    @set_command.subcommand("prices", "sets the prices")
+    async def set_prices_command(self, _: snowfin.Interaction) -> snowfin.ModalResponse:
+        """Opens up a menu to set the prices of the config."""
         return snowfin.ModalResponse(
             "config_modal",
             "Config",
@@ -59,11 +67,7 @@ class ConfigModule(snowfin.Module):
             "Updated", "This guild's config has been updated successfully."
         )
 
-    @snowfin.slash_command(
-        "set_channel",
-        default_member_permissions=snowfin.Permissions.ADMINISTRATOR,
-        dm_permission=False,
-    )
+    @set_command.subcommand("channel")
     @snowfin.slash_option(
         "channel",
         "The hosting channel you want to use.",
@@ -73,7 +77,24 @@ class ConfigModule(snowfin.Module):
     async def set_channel_command(
         self, context: snowfin.Interaction, channel: snowfin.Channel
     ) -> snowfin.Embed:
+        """Sets the hosting channel."""
+        if not channel.type == snowfin.ChannelType.GUILD_TEXT:
+            return snowfin.Embed("Error", "This must be a guild text channel.")
+
         await models.Guild.update_or_create(
-            {"hosting_channel_id": channel.id}, id=int(context.guild_id)
+            {"hosting_channel_id": channel.id}, id=context.guild_id
         )
         return snowfin.Embed("Updated", f"Set hosting channel to <#{channel.id}>.")
+
+    @view_command.subcommand("config")
+    async def view_config_command(self, context: snowfin.Interaction) -> snowfin.Embed:
+        if guild := await models.Guild.get_or_none(id=context.guild_id):
+            return (
+                snowfin.Embed("Config")
+                .add_field("Starting Balance", str(guild.starting_balance))
+                .add_field("Stonewood Cost", str(guild.stonewood_cost))
+                .add_field("Plankerton Cost", str(guild.plankerton_cost))
+                .add_field("Canny Valley Cost", str(guild.canny_valley_cost))
+                .add_field("Twine Peaks Cost", str(guild.twine_peaks_cost))
+                .add_field("Hosting Channel", f"<#{guild.hosting_channel_id}>")
+            )
