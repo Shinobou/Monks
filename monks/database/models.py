@@ -10,12 +10,12 @@ __all__: typing.Sequence[str] = ("Guild", "User")
 
 class Guild(models.Model):
     id: int = fields.IntField(pk=True)
-    starting_balance: int | None = fields.IntField(null=True, default=None)
-    stonewood_cost: int | None = fields.IntField(null=True, default=None)
-    plankerton_cost: int | None = fields.IntField(null=True, default=None)
-    canny_valley_cost: int | None = fields.IntField(null=True, default=None)
-    twine_peaks_cost: int | None = fields.IntField(null=True, default=None)
-    hosting_channel_id: int | None = fields.IntField(null=True, default=None)
+    starting_balance: typing.Optional[int] = fields.IntField(null=True, default=None)
+    stonewood_cost: typing.Optional[int] = fields.IntField(null=True, default=None)
+    plankerton_cost: typing.Optional[int] = fields.IntField(null=True, default=None)
+    canny_valley_cost: typing.Optional[int] = fields.IntField(null=True, default=None)
+    twine_peaks_cost: typing.Optional[int] = fields.IntField(null=True, default=None)
+    hosting_channel_id: typing.Optional[int] = fields.IntField(null=True, default=None)
 
 
 class User(models.Model):
