@@ -85,9 +85,26 @@ class HostingModule(snowfin.Module):
 
         if guild := await models.Guild.get_or_none(id=context.guild_id):
             if hosting_channel_id := guild.hosting_channel_id:
-                await self.client.rest.create_message(
+                message: hikari.Message = await self.client.rest.create_message(
                     hosting_channel_id,
                     hikari.Embed(title=f"{values['zone']} - Wave {values['wave']}")
                     .add_field("Username", values["username"])
                     .add_field("Notes", values["notes"]),
                 )
+                thread: hikari.GuildThreadChannel = await self.client.rest.create_message_thread(
+                    hosting_channel_id,
+                    message,
+                    f"{values['zone']} - Wave {values['wave']} - {values['username']}",
+                )
+
+                await self.client.rest.add_thread_member(thread.id, context.member.user.id)
+
+                return snowfin.Embed(
+                    "Hosting",
+                    f"Hosting your endurance in <#{hosting_channel_id}>",
+                    url=message.make_link(context.guild_id),
+                )
+
+        return snowfin.Embed(
+            "Error", "This guild still needs to configure some settings in the config."
+        )
