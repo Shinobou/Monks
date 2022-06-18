@@ -97,7 +97,9 @@ class HostingModule(snowfin.Module):
                     f"{values['zone']} - Wave {values['wave']} - {values['username']}",
                 )
 
-                await self.client.rest.add_thread_member(thread.id, context.member.user.id)
+                await self.client.rest.add_thread_member(
+                    thread.id, context.member.user.id
+                )
 
                 return snowfin.Embed(
                     "Hosting",
