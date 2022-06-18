@@ -44,7 +44,9 @@ class HostingModule(snowfin.Module):
                         [
                             snowfin.TextInput("username", "Username"),
                             snowfin.TextInput("zone", "Zone"),
-                            snowfin.TextInput("wave", "Wave", min_length=1, max_length=2),
+                            snowfin.TextInput(
+                                "wave", "Wave", min_length=1, max_length=2
+                            ),
                             snowfin.TextInput(
                                 "notes", "Notes", snowfin.TextStyleTypes.PARAGRAPH
                             ),
