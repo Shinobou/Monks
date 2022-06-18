@@ -11,6 +11,8 @@ class LifetimeModule(snowfin.Module):
             modules={"models": ["monks.database.models"]},
         )
         await tortoise.Tortoise.generate_schemas()
+        self.client.guild_cache.start()
+        self.client.user_cache.start()
 
     @snowfin.listen("stop")
     async def stop(self) -> None:

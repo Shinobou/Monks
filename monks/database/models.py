@@ -16,6 +16,7 @@ class Guild(models.Model):
     canny_valley_cost: typing.Optional[int] = fields.IntField(null=True, default=None)
     twine_peaks_cost: typing.Optional[int] = fields.IntField(null=True, default=None)
     hosting_channel_id: typing.Optional[int] = fields.IntField(null=True, default=None)
+    logging_channel_id: typing.Optional[int] = fields.IntField(null=True, default=None)
 
 
 class User(models.Model):
